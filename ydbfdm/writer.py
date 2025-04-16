@@ -11,7 +11,7 @@ DBF writer
 import struct
 import datetime
 
-from ydbf import lib
+from ydbfdm import lib
 
 
 class YDbfWriter(object):
@@ -205,7 +205,7 @@ class YDbfWriter(object):
                     msg = "Error occured while writing rec #%d. You are "
                     "using YDbfWriter with unicode mode turned off, so "
                     "we doesn't know why it occurs, so may be it is an "
-                    "issue inside ydbf, or corrupted data, or some flowing "
+                    "issue inside ydbfdm, or corrupted data, or some flowing "
                     "bug in your code. Check record data: %s" % (i, rec)
                 args = list(err.args[:-1]) + [msg]
                 raise UnicodeDecodeError(*args)

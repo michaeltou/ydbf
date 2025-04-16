@@ -15,9 +15,9 @@ import os
 import tempfile
 import unittest
 
-import ydbf
-from ydbf import dump
-from ydbf import lib
+import ydbfdm
+from ydbfdm import dump
+from ydbfdm import lib
 
 
 _TEST_DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "testdata"))
@@ -114,25 +114,25 @@ class TestYDbfReader(unittest.TestCase):
         Unit-test for reader's constructor
         """
         dbf_data = fh.read()
-        self.assertEqual(ydbf.YDbfReader(io.BytesIO(dbf_data)).raw_lang, 0)
+        self.assertEqual(ydbfdm.YDbfReader(io.BytesIO(dbf_data)).raw_lang, 0)
         self.assertEqual(
-            ydbf.YDbfReader(io.BytesIO(dbf_data), use_unicode=True).raw_lang, 0
+            ydbfdm.YDbfReader(io.BytesIO(dbf_data), use_unicode=True).raw_lang, 0
         )
         self.assertEqual(
-            ydbf.YDbfReader(io.BytesIO(dbf_data), use_unicode=True).encoding, "ascii"
+            ydbfdm.YDbfReader(io.BytesIO(dbf_data), use_unicode=True).encoding, "ascii"
         )
         self.assertEqual(
-            ydbf.YDbfReader(io.BytesIO(dbf_data), use_unicode=False).encoding, None
+            ydbfdm.YDbfReader(io.BytesIO(dbf_data), use_unicode=False).encoding, None
         )
         # without unicode encoding means nothing
         self.assertEqual(
-            ydbf.YDbfReader(
+            ydbfdm.YDbfReader(
                 io.BytesIO(dbf_data), use_unicode=False, encoding="cp866"
             ).encoding,
             None,
         )
         self.assertEqual(
-            ydbf.YDbfReader(
+            ydbfdm.YDbfReader(
                 io.BytesIO(dbf_data), use_unicode=True, encoding="cp866"
             ).encoding,
             "cp866",
@@ -140,12 +140,12 @@ class TestYDbfReader(unittest.TestCase):
 
     @testdata("simple.dbf")
     def test_dbf2date(self, fh):
-        dbf = ydbf.YDbfReader(fh)
+        dbf = ydbfdm.YDbfReader(fh)
         self.assertEqual(dbf.dbf2date, lib.dbf2date)
 
     @testdata("simple.dbf")
     def test_header(self, fh):
-        dbf = ydbf.YDbfReader(fh)
+        dbf = ydbfdm.YDbfReader(fh)
         self.assertEqual(
             dbf._fields,
             [
@@ -179,12 +179,12 @@ class TestYDbfReader(unittest.TestCase):
 
     @testdata("simple.dbf")
     def test_len(self, fh):
-        dbf = ydbf.YDbfReader(fh)
+        dbf = ydbfdm.YDbfReader(fh)
         self.assertEqual(len(dbf), 3)
 
     @testdata("simple.dbf")
     def test_call(self, fh):
-        dbf = ydbf.YDbfReader(fh)
+        dbf = ydbfdm.YDbfReader(fh)
         reference_data = [
             {
                 "INT_FLD": 25,
@@ -210,7 +210,7 @@ class TestYDbfReader(unittest.TestCase):
     def test_ooo_num_bug(self, fh):
         # OpenOffice produces wrong dbfs: it justify numbers on left and fill
         # it zeros (0x00)
-        dbf = ydbf.YDbfReader(fh)
+        dbf = ydbfdm.YDbfReader(fh)
         reference_data = [
             {
                 "INT_FLD": 25,
@@ -233,7 +233,7 @@ class TestYDbfReader(unittest.TestCase):
 
     @testdata("simple.dbf")
     def test_read_deleted(self, fh):
-        dbf = ydbf.YDbfReader(fh)
+        dbf = ydbfdm.YDbfReader(fh)
         reference_data = [
             {
                 "_deletion_flag": "",
@@ -265,13 +265,13 @@ class TestYDbfReader(unittest.TestCase):
     @testdata("wrongtype.dbf")
     def test_wrongtype(self, fh):
         with self.assertRaises(ValueError):
-            ydbf.YDbfReader(fh)
+            ydbfdm.YDbfReader(fh)
 
 
 class TestReaderConverters(unittest.TestCase):
     @testdata("simple.dbf")
     def setUp(self, fh):
-        self.dbf = ydbf.YDbfReader(fh)
+        self.dbf = ydbfdm.YDbfReader(fh)
         self.sizes = {}
         for name, typ, size, dec in self.dbf.fields:
             self.sizes[name] = size, dec
@@ -332,7 +332,7 @@ class TestReaderConverters(unittest.TestCase):
 class TestReaderNonunicodeConverters(unittest.TestCase):
     @testdata("simple.dbf")
     def setUp(self, fh):
-        self.dbf = ydbf.YDbfReader(fh, use_unicode=False)
+        self.dbf = ydbfdm.YDbfReader(fh, use_unicode=False)
         self.sizes = {}
         for name, typ, size, dec in self.dbf.fields:
             self.sizes[name] = size, dec
@@ -384,7 +384,7 @@ class TestYdbfWriter(unittest.TestCase):
             ("BLN_FLD", "L", 1, 0),
         ]
         self.fh = io.BytesIO()
-        self.dbf = ydbf.YDbfWriter(self.fh, self.fields)
+        self.dbf = ydbfdm.YDbfWriter(self.fh, self.fields)
 
     def test_header(self):
         self.assertEqual(self.dbf.now, datetime.date.today())
@@ -416,7 +416,7 @@ class TestYdbfWriter(unittest.TestCase):
         )
         fh = io.BytesIO(b"")
         with self.assertRaises(ValueError):
-            ydbf.YDbfWriter(fh, fields)
+            ydbfdm.YDbfWriter(fh, fields)
 
 
 class TestOpen(unittest.TestCase):
@@ -436,34 +436,34 @@ class TestOpen(unittest.TestCase):
         super(TestOpen, self).tearDown()
 
     def test_open_path_for_write(self):
-        dbf = ydbf.open(self.dbf_temp_path, "w", self.fields)
-        self.assertIsInstance(dbf, ydbf.YDbfWriter)
+        dbf = ydbfdm.open(self.dbf_temp_path, "w", self.fields)
+        self.assertIsInstance(dbf, ydbfdm.YDbfWriter)
 
     def test_open_filehandler_for_write(self):
-        dbf = ydbf.open(self.dbf_fh, "w", self.fields)
-        self.assertIsInstance(dbf, ydbf.YDbfWriter)
+        dbf = ydbfdm.open(self.dbf_fh, "w", self.fields)
+        self.assertIsInstance(dbf, ydbfdm.YDbfWriter)
 
     def test_open_path_for_read(self):
-        dbf = ydbf.open(self.dbf_read_path)
-        self.assertIsInstance(dbf, ydbf.YDbfReader)
+        dbf = ydbfdm.open(self.dbf_read_path)
+        self.assertIsInstance(dbf, ydbfdm.YDbfReader)
 
     def test_open_filehandler_for_read(self):
         with open(self.dbf_read_path, "rb") as fh:
-            dbf = ydbf.open(fh)
-            self.assertIsInstance(dbf, ydbf.YDbfReader)
+            dbf = ydbfdm.open(fh)
+            self.assertIsInstance(dbf, ydbfdm.YDbfReader)
 
     def test_open_with_statement(self):
-        with ydbf.open(self.dbf_read_path) as dbf:
-            self.assertIsInstance(dbf, ydbf.YDbfReader)
+        with ydbfdm.open(self.dbf_read_path) as dbf:
+            self.assertIsInstance(dbf, ydbfdm.YDbfReader)
 
     def test_open_passes_unicode_options(self):
-        unicode_dbf = ydbf.open(self.dbf_read_path, use_unicode=True)
+        unicode_dbf = ydbfdm.open(self.dbf_read_path, use_unicode=True)
         self.assertTrue(unicode_dbf.encoding)
-        bytes_dbf = ydbf.open(self.dbf_read_path, use_unicode=False)
+        bytes_dbf = ydbfdm.open(self.dbf_read_path, use_unicode=False)
         self.assertFalse(bytes_dbf.encoding)
 
     def test_open_doesnt_close_file(self):
-        dbf = ydbf.open(self.dbf_temp_path, "w", self.fields)
+        dbf = ydbfdm.open(self.dbf_temp_path, "w", self.fields)
         dbf.write([{"ID": 1, "VALUE": "One"}])
         self.assertIsNone(dbf.flush())
         dbf.close()

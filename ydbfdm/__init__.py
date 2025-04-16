@@ -15,19 +15,19 @@ Reading
 
 The entrypoint of YDbf is `open` function:
 
-    dbf = ydbf.open('simple.dbf')
+    dbf = ydbfdm.open('simple.dbf')
 
 You can use file name, or already opened (in binary mode) file:
 
     fh = open('simple.dbf', 'rb')
-    dbf = ydbf.open(fh)
+    dbf = ydbfdm.open(fh)
     
     for record in dbf:
         ...
 
 If you have Python 2.5+, you may want to use `with` statement:
 
-    with ydbf.open('simple.dbf') as dbf:
+    with ydbfdm.open('simple.dbf') as dbf:
         for record in dbf:
             ...
 
@@ -39,12 +39,12 @@ Writing
 YDbf opens file for reading by default, but you may set option `mode` to
 open for writing:
 
-    dbf = ydbf.open('simple.dbf', ydbf.WRITE, fields)
+    dbf = ydbfdm.open('simple.dbf', ydbfdm.WRITE, fields)
 
 or open file yourself:
 
     fh = open('simple.dbf', 'wb')
-    dbf = ydbf.open(fh, ydbf.WRITE, fields)
+    dbf = ydbfdm.open(fh, ydbfdm.WRITE, fields)
 
 `fields` is a structure description of DBF file, it is a required option for
 write mode. The structure is as sequence of field descriptions,
@@ -53,18 +53,18 @@ is a name of field, TYPE -- DBF type of field ('N' for number, 'C' for char,
 'D' for date, 'L' for logical), DECIMAL is a precision (useful for 'N' type only).
 
 YDbf offers the field types as constants:
- - ydbf.CHAR
- - ydbf.DATE
- - ydbf.LOGICAL
- - ydbf.NUMERAL
+ - ydbfdm.CHAR
+ - ydbfdm.DATE
+ - ydbfdm.LOGICAL
+ - ydbfdm.NUMERAL
 
 An example of the fields definition:
 
     fields = [
-        ('ID',      ydbf.NUMERAL,  4, 0),
-        ('VALUE',   ydbf.CHAR, 40, 0),
-        ('UPDATE',  ydbf.DATE, 8, 0),
-        ('VISIBLE', ydbf.LOGICAL, 1, 0),
+        ('ID',      ydbfdm.NUMERAL,  4, 0),
+        ('VALUE',   ydbfdm.CHAR, 40, 0),
+        ('UPDATE',  ydbfdm.DATE, 8, 0),
+        ('VISIBLE', ydbfdm.LOGICAL, 1, 0),
     ]
 
 
@@ -72,16 +72,16 @@ YDbf uses unicode for 'C' fields by default, so you may want to define
 encoding which be used forthe  DBF file. UTF-8 is not supported, you may
 use only 8-bit encodings.
 
-    dbf = ydbf.open('simple.dbf', ydbf.WRITE, fields, encoding='cp1251')
+    dbf = ydbfdm.open('simple.dbf', ydbfdm.WRITE, fields, encoding='cp1251')
     dbf.write(data)
 
 YDbf gets `data` as an iterator where each item is a dict, which
 keys are name of fields. For example,
 
     data = [
-        {'ID': 1, 'VALUE': u'ydbf', 'VISIBLE': True,
+        {'ID': 1, 'VALUE': u'ydbfdm', 'VISIBLE': True,
          'UPDATE': datetime.date(2009, 7, 14)},
-        {'ID': 2, 'VALUE': u'ydbf-dev', 'VISIBLE': False,
+        {'ID': 2, 'VALUE': u'ydbfdm-dev', 'VISIBLE': False,
          'UPDATE': datetime.date(2009, 5, 15)},
         {'ID': 3, 'VALUE': u'pytils', 'VISIBLE': True,
          'UPDATE': datetime.date(2009, 5, 11)},
@@ -100,14 +100,14 @@ except ImportError:
 import builtins
 
 # Import types constants from lib so they are available at package level.
-from ydbf.lib import CHAR
-from ydbf.lib import DATE
-from ydbf.lib import LOGICAL
-from ydbf.lib import NUMERAL
+from ydbfdm.lib import CHAR
+from ydbfdm.lib import DATE
+from ydbfdm.lib import LOGICAL
+from ydbfdm.lib import NUMERAL
 
 
-from ydbf.reader import YDbfReader
-from ydbf.writer import YDbfWriter
+from ydbfdm.reader import YDbfReader
+from ydbfdm.writer import YDbfWriter
 
 READ = "r"
 WRITE = "w"
@@ -142,7 +142,7 @@ def open(dbf_file, mode=READ, *args, **kwargs):
             useful for writing mode.
     """
     if mode not in FILE_MODES:
-        raise ValueError("Wrong mode %s for ydbf.open" % mode)
+        raise ValueError("Wrong mode %s for ydbfdm.open" % mode)
     dbf_class = FILE_MODES[mode]
     if isinstance(dbf_file, str):
         fh = builtins.open(dbf_file, "{mode}b".format(mode=mode))

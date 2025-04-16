@@ -9,9 +9,9 @@ YDbf data-dump script
 """
 import sys
 from optparse import OptionParser
-from ydbf import lib
-from ydbf import VERSION
-from ydbf.reader import YDbfStrictReader
+from ydbfdm import lib
+from ydbfdm import VERSION
+from ydbfdm.reader import YDbfStrictReader
 
 
 _INFO_TEMPLATE = """\
@@ -33,7 +33,7 @@ def _unescape_separator(option, opt_str, value, parser):
     """
     Unescape special symbols (like newline)
 
-    When --rs '\n' passed to ydbf.dump, OptionParser saves it as
+    When --rs '\n' passed to ydbfdm.dump, OptionParser saves it as
     '\\n', i.e. escapes it. We want to unescape special symbols
     like '\n', '\r', '\t' both in record and field separators
     """

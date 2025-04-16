@@ -13,7 +13,7 @@ import decimal
 import random
 import sys
 
-import ydbf
+import ydbfdm
 
 
 def get_n_random(size, dec):
@@ -108,7 +108,7 @@ def get_l_random(size, dec):
 def get_rec(fields_struct):
     rec = {}
     for name, typ, size, dec in fields_struct:
-        assert typ in (ydbf.CHAR, ydbf.DATE, ydbf.LOGICAL, ydbf.NUMERAL)
+        assert typ in (ydbfdm.CHAR, ydbfdm.DATE, ydbfdm.LOGICAL, ydbfdm.NUMERAL)
         getter = globals().get("get_%s_random" % typ.lower())
         if not callable(getter):
             raise ValueError(
@@ -122,31 +122,31 @@ def get_rec(fields_struct):
 
 def get_field():
     size_limits = {
-        ydbf.NUMERAL: (1, 19),
-        ydbf.CHAR: (1, 254),
-        ydbf.LOGICAL: (1, 1),
-        ydbf.DATE: (8, 8),
+        ydbfdm.NUMERAL: (1, 19),
+        ydbfdm.CHAR: (1, 254),
+        ydbfdm.LOGICAL: (1, 1),
+        ydbfdm.DATE: (8, 8),
     }
     name = str(get_c_random(11, 0, force_ascii=True).replace(" ", "_"))
     # most popular field type is a numeric
     # next string, next date and the last -- logical
     typ = random.choice(
         (
-            ydbf.NUMERAL,
-            ydbf.NUMERAL,
-            ydbf.NUMERAL,
-            ydbf.NUMERAL,
-            ydbf.CHAR,
-            ydbf.CHAR,
-            ydbf.CHAR,
-            ydbf.DATE,
-            ydbf.DATE,
-            ydbf.LOGICAL,
+            ydbfdm.NUMERAL,
+            ydbfdm.NUMERAL,
+            ydbfdm.NUMERAL,
+            ydbfdm.NUMERAL,
+            ydbfdm.CHAR,
+            ydbfdm.CHAR,
+            ydbfdm.CHAR,
+            ydbfdm.DATE,
+            ydbfdm.DATE,
+            ydbfdm.LOGICAL,
         )
     )
     size = random.randint(*size_limits[typ])
     dec = 0
-    if typ == ydbf.NUMERAL and size > 6:
+    if typ == ydbfdm.NUMERAL and size > 6:
         rand_dec = random.randint(0, int(size / 2))
         dec = random.choice((0, rand_dec))
     return name, typ, size, dec
@@ -164,7 +164,7 @@ def get_data(fields_structure, number_of_records):
 def gendbf(filename, number_of_records=2000, fields_number=20):
     fh = open(filename, "wb")
     fields = get_fields_structure(fields_number)
-    dbf = ydbf.open(filename, ydbf.WRITE, fields, encoding="cp1251")
+    dbf = ydbfdm.open(filename, ydbfdm.WRITE, fields, encoding="cp1251")
     dbf.write(get_data(fields, number_of_records))
     dbf.close()
 

@@ -12,7 +12,7 @@ import datetime
 from decimal import Decimal
 from struct import calcsize, unpack
 
-from ydbf import lib
+from ydbfdm import lib
 
 
 class YDbfReader(object):

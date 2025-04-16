@@ -42,6 +42,8 @@ ENCODINGS = {
     0xC9: ("cp1251", "Russian Windows"),
     0xCA: ("cp1254", "Turkish Windows"),
     0xCB: ("cp1253", "Greek Windows"),
+    0x4D: ('cp936', 'Chinese GBK (PRC)'),  # add by douming 2025.04.16 增加中文的编码处理
+    0x7a: ('cp936', 'Chinese Simplified (PRC, Singapore) Windows'),
     ## These encodings are not supported by Python but a part of DBF spec.
     # 0x68:    ('cp895', 'Kamenicky (Czech) MS-DOS'),
     # 0x69:    ('cp790', 'Mazovia (Polish) MS-DOS'),
@@ -68,6 +70,7 @@ SIGNATURES = {
     0xE5: "Clipper SIX driver with SMT memo field",
     0xF5: "FoxPro with memo field",
     0xFB: "FoxPro",
+
 }
 
 SUPPORTED_SIGNATURES = (0x03, 0x04, 0x05)

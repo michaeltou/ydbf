@@ -4,7 +4,7 @@ Move DBF data (as single table) to RDBMS using SQLAlchemy
 """
 
 import os
-import ydbf
+import ydbfdm
 import sqlalchemy as sa  # Verified with SQLA v0.5-v1.4
 
 
@@ -27,17 +27,17 @@ def _create_column(dbf_name, dbf_type, dbf_length, dbf_decimal):
     """
     Return SQLAlchemy column for specified dbf field
     """
-    if dbf_type == ydbf.CHAR:
+    if dbf_type == ydbfdm.CHAR:
         sa_type = sa.Unicode(dbf_length)
-    elif dbf_type == ydbf.DATE:
+    elif dbf_type == ydbfdm.DATE:
         sa_type = sa.Date
-    elif dbf_type == ydbf.NUMERAL:
+    elif dbf_type == ydbfdm.NUMERAL:
         if dbf_decimal == 0:
             sa_type = sa.Integer
         else:
             # WARN: all decimals are converted to float, may loose some info
             sa_type = sa.Float
-    elif dbf_type == ydbf.LOGICAL:
+    elif dbf_type == ydbfdm.LOGICAL:
         sa_type = sa.Boolean
     else:
         raise ValueError("Doesn't know how convert %r type" % dbf_type)
@@ -133,7 +133,7 @@ def dbf2sa(dbf_name, sa_uri):
         ``sa_uri``
             SQLAlchemy DB URI, move data to
     """
-    reader = ydbf.open(dbf_name)
+    reader = ydbfdm.open(dbf_name)
     meta = make_meta(sa_uri)
     table = make_table(meta, reader)
     push_data(table, convert_data(reader))

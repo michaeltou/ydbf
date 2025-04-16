@@ -1,8 +1,11 @@
 **/__pycache__/**
 *.pyc
 YDbf.egg-info/
+*egg-info/
 build/
 dist/
 doc/examples/*.dbf
 doc/examples/converted.db
-
+.DS_Store
+**/.DS_Store
+.idea/

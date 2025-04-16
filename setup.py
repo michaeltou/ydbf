@@ -8,7 +8,7 @@ with open(_README) as fh:
 version = "0.5rc"
 
 setup(
-    name="YDbf",
+    name="ydbfdm-py3-dm",
     version=version,
     description="Pythonic reader and writer for DBF/XBase files",
     long_description=_LONG_DESCRIPTION,
@@ -39,6 +39,6 @@ setup(
     entry_points="""
       # -*- Entry points: -*-
       [console_scripts]
-      ydbfdump = ydbf.dump:main
+      ydbfdump = ydbfdm.dump:main
       """,
 )
